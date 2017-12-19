@@ -1,0 +1,74 @@
+--- a/wrapper/Makefile	2017-08-12 16:39:20.000000000 -0600
++++ b/wrapper/Makefile-1	2017-12-19 00:42:26.851500558 -0600
+@@ -5,6 +5,15 @@
+ FEATURESRCDIR = $(TOP)/../feature/src
+ PTOOLSDIR = $(TOP)/../ptools
+ 
++MACHINE := $(shell uname -m)
++
++ifeq ($(MACHINE), x86_64)
++libdir = lib64
++endif
++ifeq ($(MACHINE), i686)
++libdir = lib
++endif
++
+ OBJS = \
+ 	$(OBJDIR)/alloc.o \
+ 	$(OBJDIR)/frame.o \
+@@ -130,7 +139,7 @@
+ $(OBJDIR)/%.o: $(SRCDIR)/pugixml/%.cpp
+ 	$(CXX) -c -o $@ $(CXXFLAGS) $(CPPFLAGS) $<
+ 
+-PREFIX = /usr/local
++PREFIX = /usr
+ 
+ lib = libvmaf.a
+ $(lib): $(OBJS) $(wildcard ../ptools/*.o)
+@@ -142,25 +151,25 @@
+ .PHONY: install
+ install:
+ 	ar -dv $(lib) main.o
+-	mkdir -p $(DESTDIR)$(PREFIX)/lib
++	mkdir -p $(DESTDIR)$(PREFIX)/$(libdir)
+ 	mkdir -p $(DESTDIR)$(PREFIX)/include
+ 	mkdir -p $(DESTDIR)$(PREFIX)/share
+-	mkdir -p $(DESTDIR)$(PREFIX)/lib/pkgconfig
+-	cp $(lib) $(DESTDIR)$(PREFIX)/lib/$(lib)
++	mkdir -p $(DESTDIR)$(PREFIX)/$(libdir)/pkgconfig
++	cp $(lib) $(DESTDIR)$(PREFIX)/$(libdir)/$(lib)
+ 	cp src/libvmaf.h $(DESTDIR)$(PREFIX)/include/
+ 	cp -r ../model $(DESTDIR)$(PREFIX)/share/
+-	cp libvmaf.pc $(DESTDIR)$(PREFIX)/lib/pkgconfig/
++	cp libvmaf.pc $(DESTDIR)$(PREFIX)/$(libdir)/pkgconfig/
+ 
+ .PHONY: uninstall
+ uninstall:
+ 	rm -f $(lib)
+-	rm -f $(DESTDIR)$(PREFIX)/lib/$(lib)
++	rm -f $(DESTDIR)$(PREFIX)/$(libdir)/$(lib)
+ 	rm -f $(DESTDIR)$(PREFIX)/include/libvmaf.h
+ 	rm -fr $(DESTDIR)$(PREFIX)/share/model
+-	rm -f $(DESTDIR)$(PREFIX)/lib/pkgconfig/libvmaf.pc
++	rm -f $(DESTDIR)$(PREFIX)/$(libdir)/pkgconfig/libvmaf.pc
+ 
+ testlib: $(SRCDIR)/main.cpp
+-	$(CXX) -s -o $@  $(CXXFLAGS) $^ -I $(FEATURESRCDIR) -I $(DESTDIR)$(PREFIX)/include -L$(DESTDIR)$(PREFIX)/lib -lvmaf -pthread
++	$(CXX) -s -o $@  $(CXXFLAGS) $^ -I $(FEATURESRCDIR) -I $(DESTDIR)$(PREFIX)/include -L$(DESTDIR)$(PREFIX)/$(libdir) -lvmaf -pthread
+ 
+ .PHONY: clean
+ clean:
+
+--- a/wrapper/libvmaf.pc	2017-08-12 16:39:20.000000000 -0600
++++ b/wrapper/libvmaf-1.pc	2017-12-19 00:30:58.702964826 -0600
+@@ -1,7 +1,7 @@
+-prefix=/usr/local
++prefix=/usr
+ exec_prefix=${prefix}
+-libdir=/usr/local/lib
+-includedir=/usr/local/include
++libdir=${prefix}/@libdir@
++includedir=/usr/include
+ 
+ Name: libvmaf
+ Description: Netflix's VMAF library
