@@ -1,9 +1,10 @@
---- a/wrapper/Makefile	2017-08-12 16:39:20.000000000 -0600
-+++ b/wrapper/Makefile-1	2017-12-19 00:42:26.851500558 -0600
-@@ -5,6 +5,15 @@
+--- a/wrapper/Makefile	2018-04-13 13:09:23.000000000 -0600
++++ b/wrapper/Makefile-1	2018-04-20 18:20:52.857332775 -0600
+@@ -8,7 +8,16 @@
+ OBJDIR = $(TOP)/obj
  FEATURESRCDIR = $(TOP)/../feature/src
  PTOOLSDIR = $(TOP)/../ptools
- 
+-INSTALL_PREFIX = /usr/local
 +MACHINE := $(shell uname -m)
 +
 +ifeq ($(MACHINE), x86_64)
@@ -13,48 +14,39 @@
 +libdir = lib
 +endif
 +
++INSTALL_PREFIX = /usr
+ 
  OBJS = \
  	$(OBJDIR)/alloc.o \
- 	$(OBJDIR)/frame.o \
-@@ -130,7 +139,7 @@
- $(OBJDIR)/%.o: $(SRCDIR)/pugixml/%.cpp
- 	$(CXX) -c -o $@ $(CXXFLAGS) $(CPPFLAGS) $<
+@@ -151,24 +160,24 @@
  
--PREFIX = /usr/local
-+PREFIX = /usr
- 
- lib = libvmaf.a
- $(lib): $(OBJS) $(wildcard ../ptools/*.o)
-@@ -142,25 +151,25 @@
  .PHONY: install
  install:
- 	ar -dv $(lib) main.o
--	mkdir -p $(DESTDIR)$(PREFIX)/lib
-+	mkdir -p $(DESTDIR)$(PREFIX)/$(libdir)
- 	mkdir -p $(DESTDIR)$(PREFIX)/include
- 	mkdir -p $(DESTDIR)$(PREFIX)/share
--	mkdir -p $(DESTDIR)$(PREFIX)/lib/pkgconfig
--	cp $(lib) $(DESTDIR)$(PREFIX)/lib/$(lib)
-+	mkdir -p $(DESTDIR)$(PREFIX)/$(libdir)/pkgconfig
-+	cp $(lib) $(DESTDIR)$(PREFIX)/$(libdir)/$(lib)
- 	cp src/libvmaf.h $(DESTDIR)$(PREFIX)/include/
- 	cp -r ../model $(DESTDIR)$(PREFIX)/share/
--	cp libvmaf.pc $(DESTDIR)$(PREFIX)/lib/pkgconfig/
-+	cp libvmaf.pc $(DESTDIR)$(PREFIX)/$(libdir)/pkgconfig/
+-	mkdir -p $(DESTDIR)$(INSTALL_PREFIX)/lib
++	mkdir -p $(DESTDIR)$(INSTALL_PREFIX)/$(libdir)
+ 	mkdir -p $(DESTDIR)$(INSTALL_PREFIX)/include
+ 	mkdir -p $(DESTDIR)$(INSTALL_PREFIX)/share
+-	mkdir -p $(DESTDIR)$(INSTALL_PREFIX)/lib/pkgconfig
+-	cp $(LIBVMAF) $(DESTDIR)$(INSTALL_PREFIX)/lib/$(LIBVMAF)
++	mkdir -p $(DESTDIR)$(INSTALL_PREFIX)/$(libdir)/pkgconfig
++	cp $(LIBVMAF) $(DESTDIR)$(INSTALL_PREFIX)/$(libdir)/$(LIBVMAF)
+ 	cp src/libvmaf.h $(DESTDIR)$(INSTALL_PREFIX)/include/
+ 	cp -r ../model $(DESTDIR)$(INSTALL_PREFIX)/share/
+-	cp libvmaf.pc $(DESTDIR)$(INSTALL_PREFIX)/lib/pkgconfig/
++	cp libvmaf.pc $(DESTDIR)$(INSTALL_PREFIX)/$(libdir)/pkgconfig/
  
  .PHONY: uninstall
  uninstall:
- 	rm -f $(lib)
--	rm -f $(DESTDIR)$(PREFIX)/lib/$(lib)
-+	rm -f $(DESTDIR)$(PREFIX)/$(libdir)/$(lib)
- 	rm -f $(DESTDIR)$(PREFIX)/include/libvmaf.h
- 	rm -fr $(DESTDIR)$(PREFIX)/share/model
--	rm -f $(DESTDIR)$(PREFIX)/lib/pkgconfig/libvmaf.pc
-+	rm -f $(DESTDIR)$(PREFIX)/$(libdir)/pkgconfig/libvmaf.pc
+-	rm -f $(DESTDIR)$(INSTALL_PREFIX)/lib/$(LIBVMAF)
++	rm -f $(DESTDIR)$(INSTALL_PREFIX)/$(libdir)/$(LIBVMAF)
+ 	rm -f $(DESTDIR)$(INSTALL_PREFIX)/include/libvmaf.h
+ 	rm -fr $(DESTDIR)$(INSTALL_PREFIX)/share/model
+-	rm -f $(DESTDIR)$(INSTALL_PREFIX)/lib/pkgconfig/libvmaf.pc
++	rm -f $(DESTDIR)$(INSTALL_PREFIX)/$(libdir)/pkgconfig/libvmaf.pc
  
  testlib: $(SRCDIR)/main.cpp
--	$(CXX) -s -o $@  $(CXXFLAGS) $^ -I $(FEATURESRCDIR) -I $(DESTDIR)$(PREFIX)/include -L$(DESTDIR)$(PREFIX)/lib -lvmaf -pthread
-+	$(CXX) -s -o $@  $(CXXFLAGS) $^ -I $(FEATURESRCDIR) -I $(DESTDIR)$(PREFIX)/include -L$(DESTDIR)$(PREFIX)/$(libdir) -lvmaf -pthread
+-	$(CXX) -s -o $@  $(CXXFLAGS) $^ -I $(FEATURESRCDIR) -I $(FEATURESRCDIR)/common -I $(DESTDIR)$(INSTALL_PREFIX)/include -L$(DESTDIR)$(INSTALL_PREFIX)/lib -lvmaf -pthread
++	$(CXX) -s -o $@  $(CXXFLAGS) $^ -I $(FEATURESRCDIR) -I $(FEATURESRCDIR)/common -I $(DESTDIR)$(INSTALL_PREFIX)/include -L$(DESTDIR)$(INSTALL_PREFIX)/$(libdir) -lvmaf -pthread
  
  .PHONY: clean
  clean:
