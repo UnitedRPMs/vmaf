@@ -13,10 +13,12 @@ License:        ASL 2.0
 URL:            https://github.com/netflix/vmaf/
 
 Source0:  	https://github.com/Netflix/vmaf/archive/%{commit0}.tar.gz#/%{name}-%{shortcommit0}.tar.gz
+Source1:	%{name}-snapshot
 Patch:		libdir_fix.patch
 
 BuildRequires:  make
 BuildRequires:	gcc >= 5.1.1-2
+BuildRequires:	git
 Requires:       %{name}-static = %{version}-%{release}
 Provides:	libvmaf = %{version}-%{release}
 
@@ -41,7 +43,9 @@ developing applications that use vmaf.
 
 
 %prep
-%autosetup -n %{name}-%{commit0} -p1
+
+%{S:1} -c %{commit0}
+%autosetup -T -D -n %{name}-%{shortcommit0} -p1
 
 %build
 
@@ -85,6 +89,7 @@ install -m 644 libsvm/libsvm.so.2 %{buildroot}/%{_libdir}/
 
 * Wed May 30 2018 Unitedrpms Project <unitedrpms AT protonmail DOT com> 1.3.5-1.gita6957a0 
 - Updated to 1.3.5-1.gita6957a0
+- Added sub-module missed
 
 * Wed May 09 2018 David Vásquez <davidva AT tutanota DOT com> - 1.3.4-1.gitf1225dc
 - Updated to 1.3.4-1.gitf1225dc
