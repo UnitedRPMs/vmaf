@@ -1,18 +1,18 @@
 %global debug_package %{nil}
-%global gitdate 20180509
-%global commit0 f1225dc5366c4bd0ed2a315e4a21c88e42a4fc1e
+%global gitdate 20180530
+%global commit0 a6957a081a4bdb6643662f3172edbaa22394919b
 %global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
 %global gver .git%{shortcommit0}
 
 Name:           vmaf
-Version:        1.3.4
+Version:        1.3.5
 Release:        1%{?gver}%{dist}
 Summary:        Library for perceptual video quality assessment based on multi-method fusion
 
 License:        ASL 2.0
 URL:            https://github.com/netflix/vmaf/
 
-Source0:  	https://github.com/Netflix/%{name}/archive/%{commit0}.tar.gz#/%{name}-%{shortcommit0}.tar.gz
+Source0:  	https://github.com/Netflix/vmaf/archive/%{commit0}.tar.gz#/%{name}-%{shortcommit0}.tar.gz
 Patch:		libdir_fix.patch
 
 BuildRequires:  make
@@ -82,6 +82,9 @@ install -m 644 libsvm/libsvm.so.2 %{buildroot}/%{_libdir}/
 
 
 %changelog
+
+* Wed May 30 2018 Unitedrpms Project <unitedrpms AT protonmail DOT com> 1.3.5-1.gita6957a0 
+- Updated to 1.3.5-1.gita6957a0
 
 * Wed May 09 2018 David Vásquez <davidva AT tutanota DOT com> - 1.3.4-1.gitf1225dc
 - Updated to 1.3.4-1.gitf1225dc
