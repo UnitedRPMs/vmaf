@@ -1,5 +1,20 @@
---- a/wrapper/Makefile	2018-04-13 13:09:23.000000000 -0600
-+++ b/wrapper/Makefile-1	2018-04-20 18:20:52.857332775 -0600
+diff -ruN orig/wrapper/libvmaf.pc new/wrapper/libvmaf.pc
+--- orig/wrapper/libvmaf.pc	2019-02-19 00:39:23.000000000 -0600
++++ new/wrapper/libvmaf.pc	2019-02-26 01:54:24.538563073 -0600
+@@ -1,7 +1,7 @@
+-prefix=/usr/local
++prefix=/usr
+ exec_prefix=${prefix}
+-libdir=/usr/local/lib
+-includedir=/usr/local/include
++libdir=${prefix}/@libdir@
++includedir=/usr/include
+ 
+ Name: libvmaf
+ Description: Netflix's VMAF library
+diff -ruN orig/wrapper/Makefile new/wrapper/Makefile
+--- orig/wrapper/Makefile	2019-02-19 00:39:23.000000000 -0600
++++ new/wrapper/Makefile	2019-02-26 01:53:06.574818875 -0600
 @@ -8,7 +8,16 @@
  OBJDIR = $(TOP)/obj
  FEATURESRCDIR = $(TOP)/../feature/src
@@ -15,10 +30,10 @@
 +endif
 +
 +INSTALL_PREFIX = /usr
+ INCLUDES += -I$(TOP)/../feature/src
+ INCLUDES += -I$(TOP)/../feature/src/common
  
- OBJS = \
- 	$(OBJDIR)/alloc.o \
-@@ -151,24 +160,24 @@
+@@ -168,24 +177,24 @@
  
  .PHONY: install
  install:
@@ -50,17 +65,3 @@
  
  .PHONY: clean
  clean:
-
---- a/wrapper/libvmaf.pc	2017-08-12 16:39:20.000000000 -0600
-+++ b/wrapper/libvmaf-1.pc	2017-12-19 00:30:58.702964826 -0600
-@@ -1,7 +1,7 @@
--prefix=/usr/local
-+prefix=/usr
- exec_prefix=${prefix}
--libdir=/usr/local/lib
--includedir=/usr/local/include
-+libdir=${prefix}/@libdir@
-+includedir=/usr/include
- 
- Name: libvmaf
- Description: Netflix's VMAF library
