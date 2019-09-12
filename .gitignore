@@ -4,4 +4,6 @@ RPMS/*
 SPECS/*
 SRPMS/*
 *.tar.gz
+*.rpm
+.directory
 

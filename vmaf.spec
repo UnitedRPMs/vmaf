@@ -1,11 +1,11 @@
 %global debug_package %{nil}
-%global gitdate 20190406
-%global commit0 fcf8c9e695b16f9f3b43af9a4a0c3fb792fc071a
+%global gitdate 20190911
+%global commit0 e434247f8bf8f5ec36ba87062656583c073394fd
 %global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
 %global gver .git%{shortcommit0}
 
 Name:           vmaf
-Version:        1.3.14
+Version:        1.3.15
 Release:        1%{?gver}%{dist}
 Summary:        Library for perceptual video quality assessment based on multi-method fusion
 
@@ -87,6 +87,9 @@ install -m 644 libsvm/libsvm.so.2 %{buildroot}/%{_libdir}/
 
 
 %changelog
+
+* Wed Sep 11 2019 Unitedrpms Project <unitedrpms AT protonmail DOT com> 1.3.15-1.gite434247
+- Updated to 1.3.15
 
 * Sat Apr 06 2019 Unitedrpms Project <unitedrpms AT protonmail DOT com> 1.3.14-1.gita0e7289
 - Updated to 1.3.14
