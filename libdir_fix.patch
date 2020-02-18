@@ -1,6 +1,6 @@
 diff -ruN orig/wrapper/libvmaf.pc new/wrapper/libvmaf.pc
---- orig/wrapper/libvmaf.pc	2019-02-19 00:39:23.000000000 -0600
-+++ new/wrapper/libvmaf.pc	2019-02-26 01:54:24.538563073 -0600
+--- orig/wrapper/libvmaf.pc	2019-09-08 12:35:54.000000000 -0600
++++ new/wrapper/libvmaf.pc	2020-02-18 17:25:37.566081069 -0600
 @@ -1,7 +1,7 @@
 -prefix=/usr/local
 +prefix=/usr
@@ -13,8 +13,8 @@ diff -ruN orig/wrapper/libvmaf.pc new/wrapper/libvmaf.pc
  Name: libvmaf
  Description: Netflix's VMAF library
 diff -ruN orig/wrapper/Makefile new/wrapper/Makefile
---- orig/wrapper/Makefile	2019-02-19 00:39:23.000000000 -0600
-+++ new/wrapper/Makefile	2019-02-26 01:53:06.574818875 -0600
+--- orig/wrapper/Makefile	2019-09-08 12:35:54.000000000 -0600
++++ new/wrapper/Makefile	2020-02-18 17:31:54.220195706 -0600
 @@ -8,7 +8,16 @@
  OBJDIR = $(TOP)/obj
  FEATURESRCDIR = $(TOP)/../feature/src

@@ -45,8 +45,8 @@ developing applications that use vmaf.
 
 %prep
 
-%{S:1} -c %{commit0}
-%autosetup -T -D -n %{name}-%{shortcommit0} -p1
+#{S:1} -c #{commit0}
+%autosetup -n %{name}-%{commit0} -p1
 
 %build
 
