@@ -14,59 +14,63 @@ URL:            https://github.com/netflix/vmaf/
 
 Source0:  	https://github.com/Netflix/vmaf/archive/%{commit0}.tar.gz#/%{name}-%{shortcommit0}.tar.gz
 Source1:	%{name}-snapshot
-Patch:		libdir_fix.patch
+#Patch:		libdir_fix.patch
 
 BuildRequires:  make
 BuildRequires:	gcc >= 5.1.1-2
 BuildRequires:	gcc-c++
-BuildRequires:	git
-Requires:       %{name}-static = %{version}-%{release}
-Provides:	libvmaf = %{version}-%{release}
+BuildRequires:	meson
+BuildRequires:	doxygen
 
 %description
 Library for perceptual video quality assessment based on multi-method fusion.
 
-%package        static
+%package -n	libvmaf
+Summary:        Libs for vmaf
+Obsoletes: 	%{name}-static >= %{version}
+
+%description -n libvmaf
+Libs for vmaf
+
+%package -n	libvmaf-devel
 Summary:        Development files for %{name}
 Requires:       %{name} = %{version}-%{release}
+Obsoletes: 	vmaf-devel >= %{version}
 
-%description    static
-The package contains static libraries that use vmaf.
-
-
-%package        devel
-Summary:        Development files for %{name}
-Requires:       %{name} = %{version}-%{release}
-
-%description    devel
-The %{name}-devel package contains libraries and header files for
+%description -n libvmaf-devel
+The libvmaf-devel package contains libraries and header files for
 developing applications that use vmaf.
 
 
 %prep
-
-#{S:1} -c #{commit0}
 %autosetup -n %{name}-%{commit0} -p1
 
 %build
+pushd libvmaf/
+%meson 
 
-pushd libsvm/
-make PREFIX='/usr' lib
-popd
-
-make PREFIX='/usr' all
+%meson_build 
 
 
 %install
-%make_install PREFIX='/usr'
+pushd libvmaf/
+%meson_install
 
-%ifarch x86_64 
-sed -i 's|@libdir@|lib64|g' %{buildroot}/%{_libdir}/pkgconfig/libvmaf.pc
-%else
-sed -i 's|@libdir@|lib|g' %{buildroot}/%{_libdir}/pkgconfig/libvmaf.pc
-%endif
+pushd %{buildroot}/%{_libdir}
+gcc -shared -fPIC -Wl,-soname,libvmaf.so -o libvmaf.so.0.0.0
+ln -s libvmaf.so.0.0.0 libvmaf.so.0
+popd
 
-install -m 644 libsvm/libsvm.so.2 %{buildroot}/%{_libdir}/
+pushd *-redhat-linux-gnu/tools
+for _bin in moment ms_ssim psnr ssim
+    do
+        install -D -m755 "${_bin}" "%{buildroot}/%{_bindir}/vmaf-${_bin}"
+    done
+popd
+
+# We don't need it 
+rm -f %{buildroot}/%{_libdir}/libvmaf.a
+
 
 %post -p /sbin/ldconfig
 
@@ -75,14 +79,17 @@ install -m 644 libsvm/libsvm.so.2 %{buildroot}/%{_libdir}/
 
 %files
 %license LICENSE
+%{_bindir}/vmaf-*
+%{_bindir}/vmafossexec
 %{_datadir}/model
-%{_libdir}/libsvm.so.*
 
-%files static
-%{_libdir}/libvmaf.a
+%files -n libvmaf
+%{_libdir}/*.so.*
 
-%files devel
-%{_includedir}/libvmaf.h
+%files -n libvmaf-devel
+%{_libdir}/libvmaf.so
+%{_includedir}/libvmaf/libvmaf.h
+%{_includedir}/libvmaf/version.h
 %{_libdir}/pkgconfig/libvmaf.pc
 
 
