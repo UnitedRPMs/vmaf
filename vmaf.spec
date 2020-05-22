@@ -6,21 +6,21 @@
 
 Name:           vmaf
 Version:        1.5.1
-Release:        1%{?gver}%{dist}
+Release:        7%{?gver}%{dist}
 Summary:        Library for perceptual video quality assessment based on multi-method fusion
 
 License:        ASL 2.0
 URL:            https://github.com/netflix/vmaf/
 
 Source0:  	https://github.com/Netflix/vmaf/archive/%{commit0}.tar.gz#/%{name}-%{shortcommit0}.tar.gz
-Source1:	%{name}-snapshot
-#Patch:		libdir_fix.patch
+Patch:		pkconfig.patch
 
 BuildRequires:  make
 BuildRequires:	gcc >= 5.1.1-2
 BuildRequires:	gcc-c++
 BuildRequires:	meson
 BuildRequires:	doxygen
+
 
 %description
 Library for perceptual video quality assessment based on multi-method fusion.
@@ -47,12 +47,17 @@ developing applications that use vmaf.
 
 %build
 pushd libvmaf/
-%meson 
+%meson --buildtype release
 
 %meson_build 
 
+popd
+
+#make -C third_party/libsvm -j lib
+
 
 %install
+
 pushd libvmaf/
 %meson_install
 
@@ -67,8 +72,12 @@ for _bin in moment ms_ssim psnr ssim
         install -D -m755 "${_bin}" "%{buildroot}/%{_bindir}/vmaf-${_bin}"
     done
 popd
+  popd
 
-# We don't need it 
+# cp -f third_party/libsvm/libsvm.so.2 %{buildroot}/%{_libdir}/
+
+
+# We don't need it yet
 rm -f %{buildroot}/%{_libdir}/libvmaf.a
 
 
@@ -85,6 +94,7 @@ rm -f %{buildroot}/%{_libdir}/libvmaf.a
 
 %files -n libvmaf
 %{_libdir}/*.so.*
+#{_libdir}/libvmaf.a
 
 %files -n libvmaf-devel
 %{_libdir}/libvmaf.so
@@ -94,6 +104,9 @@ rm -f %{buildroot}/%{_libdir}/libvmaf.a
 
 
 %changelog
+
+* Thu May 21 2020 Unitedrpms Project <unitedrpms AT protonmail DOT com> 1.5.1-7.git35c6044
+- pkgconfig fix
 
 * Mon Mar 02 2020 Unitedrpms Project <unitedrpms AT protonmail DOT com> 1.5.1-1.git35c6044
 - Updated to 1.5.1
